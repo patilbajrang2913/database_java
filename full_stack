@@ -1,0 +1,124 @@
+create table language(
+language_id int primary key,
+name varchar(50),
+last_update timestamp
+);
+
+create table film(
+film_id int primary key,
+title varchar(255),
+description text,
+release_year int,
+language_id int,
+rental_duration int,
+rental_rate decimal(4,2),
+length int,
+replacement_cost decimal(5,2),
+rating varchar(10),
+last_update timestamp,
+special_features varchar(255),
+fulltext text,
+foreign key(language_id) references language(language_id)
+);
+
+create table category(
+category_id int primary key,
+name varchar(50),
+last_update timestamp
+);
+
+create table file_category(
+film_id int,
+category_id int,
+last_update timestamp,
+primary key(film_id, category_id),
+foreign key(film_id) references film(film_id),
+foreign key(category_id) references category(category_id)
+);
+
+create table inventory (
+inventory_id INT primary key,
+film_id int,
+store_id int,
+last_update timestamp,
+foreign key (film_id) references film(film_id)
+);
+
+create table country(
+country_id int primary key,
+country varchar(50),
+last_update timestamp
+);
+
+create table city(
+city_id int primary key,
+city varchar(50),
+country_id int,
+last_update timestamp,
+foreign key(country_id) references country(country_id)
+);
+
+create table address (
+address_id int primary key,
+address varchar(255),
+address2 varchar(255),
+district varchar(50),
+city_id int,
+postal_code varchar(10),
+phone varchar(20),
+last_update timestamp,
+foreign key (city_id) references city(city_id)
+);
+
+create table customer (
+customer_id int primary key,
+store_id int,
+first_name varchar(50),
+last_name varchar(50),
+email varchar(100),
+address_id int,
+activebool boolean,
+create_date date,
+last_update timestamp,
+active boolean,
+foreign key (address_id) references address(address_id)
+);
+
+create table staff (
+staff_id int primary key,
+first_name varchar(50),
+last_name varchar(50),
+address_id int,
+email varchar(100),
+store_id int,
+active BOOLEAN,
+username varchar(50),
+password varchar(50),
+last_update timestamp,
+foreign key (address_id) references address(address_id)
+);
+
+create table rental (
+rental_id int primary key,
+rental_date timestamp,
+inventory_id int,
+customer_id int,
+return_date timestamp,
+staff_id int,
+last_update timestamp,
+foreign key (inventory_id) references inventory(inventory_id),
+foreign key (customer_id) references customer(customer_id),
+foreign key (staff_id) references staff(staff_id)
+);
+
+create table payment (
+payment_id int primary key,
+customer_id int,
+staff_id int,
+rental_id int,
+amount decimal(5,2),
+payment_date timestamp,
+foreign key (customer_id) references customer(customer_id),
+foreign key (staff_id) references staff(staff_id),
+foreign key (rental_id) references rental(rental_id)
+);
